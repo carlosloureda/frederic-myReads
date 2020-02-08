@@ -2,7 +2,7 @@ import React, { Component } from "react";
 
 import SearchList from "./SearchList";
 
-import { getAll, search } from "./BooksAPI";
+import { getAll, search } from "./api/BooksAPI";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import HomePage from "./components/HomePage/HomePage";

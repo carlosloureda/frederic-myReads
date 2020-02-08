@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import { update } from './BooksAPI';
+import React, { Component } from "react";
+import { update } from "../../../api/BooksAPI";
 
 export default class SwitchListButton extends Component {
   state = {
-    value: ''
+    value: ""
   };
 
   setBookToNewShelf = newShelfSelected => {
     let newBook = this.props.bookAttached;
-    newBook['shelf'] = newShelfSelected;
+    newBook["shelf"] = newShelfSelected;
 
     return newBook;
   };
@@ -44,20 +44,20 @@ export default class SwitchListButton extends Component {
 
   defaultSelect = () => {
     if (this.props.bookAttached.shelf) return this.props.bookAttached.shelf;
-    return 'none';
+    return "none";
   };
 
   render() {
     return (
-      <div className='book-shelf-changer'>
+      <div className="book-shelf-changer">
         <select value={this.defaultSelect()} onChange={this.handleChange}>
-          <option value='move' disabled>
+          <option value="move" disabled>
             Move to...
           </option>
-          <option value='currentlyReading'>Currently Reading</option>
-          <option value='wantToRead'>Want to Read</option>
-          <option value='read'>Read</option>
-          <option value='none'>None</option>
+          <option value="currentlyReading">Currently Reading</option>
+          <option value="wantToRead">Want to Read</option>
+          <option value="read">Read</option>
+          <option value="none">None</option>
         </select>
       </div>
     );

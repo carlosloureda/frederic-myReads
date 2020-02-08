@@ -1,12 +1,7 @@
 import React, { Component } from "react";
-import SwitchListButton from "../../SwitchListButton";
 
+import Book from "../Book/Book";
 class BookShelf extends Component {
-  containsImageLink = item => {
-    if (item.imageLinks) return true;
-    return false;
-  };
-
   areThereAnyBooksToShow = () => this.props.books.length;
 
   addBookHandler = (bookToAdd, shelf, oldshelf) => {
@@ -27,36 +22,11 @@ class BookShelf extends Component {
               {books.map(book => {
                 return (
                   <li key={book.id}>
-                    <div className="book">
-                      <div className="book-top">
-                        {this.containsImageLink(book) ? (
-                          <div
-                            className="book-cover"
-                            style={{
-                              width: 128,
-                              height: 192,
-                              backgroundImage: `url(${book.imageLinks.smallThumbnail})`
-                            }}
-                          ></div>
-                        ) : (
-                          <div
-                            className="book-cover"
-                            style={{
-                              width: 128,
-                              height: 192,
-                              backgroundImage: `url(${book.previewLink})`
-                            }}
-                          ></div>
-                        )}
-                        <SwitchListButton
-                          bookAttached={book}
-                          removeBookHandler={this.removeBookHandler}
-                          addBookHandler={this.addBookHandler}
-                        />
-                      </div>
-                      <div className="book-title">{book.title}</div>
-                      <div className="book-authors">{book.authors}</div>
-                    </div>
+                    <Book
+                      book={book}
+                      removeBookHandler={this.removeBookHandler}
+                      addBookHandler={this.addBookHandler}
+                    />
                   </li>
                 );
               })}
