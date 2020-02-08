@@ -2,14 +2,11 @@ import React, { Component } from "react";
 
 import Book from "../Book/Book";
 class BookShelf extends Component {
-  areThereAnyBooksToShow = () => this.props.books.length;
+  areThereAnyBooksToShow = () =>
+    this.props.books && this.props.books.length ? true : false;
 
   addBookHandler = (bookToAdd, shelf, oldshelf) => {
     this.props.addBook(bookToAdd, shelf, oldshelf);
-  };
-
-  removeBookHandler = (bookToRemove, shelf) => {
-    this.props.removeBook(bookToRemove, shelf);
   };
   render() {
     const { books, shelfName } = this.props;
@@ -22,11 +19,7 @@ class BookShelf extends Component {
               {books.map(book => {
                 return (
                   <li key={book.id}>
-                    <Book
-                      book={book}
-                      removeBookHandler={this.removeBookHandler}
-                      addBookHandler={this.addBookHandler}
-                    />
+                    <Book book={book} addBookHandler={this.addBookHandler} />
                   </li>
                 );
               })}

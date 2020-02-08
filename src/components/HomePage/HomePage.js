@@ -17,22 +17,19 @@ const HomePage = ({
       <div className="list-books-content">
         <div>
           <BookShelf
-            books={shelves.bookShelfCurrentlyReading}
+            books={shelves.currentlyReading}
             addBook={addBookToShelf}
             shelfName="Currently Reading"
-            removeBook={removeBookFromShelf}
           />
           <BookShelf
-            books={shelves.bookShelfWantToRead}
+            books={shelves.wantToRead}
             addBook={addBookToShelf}
             shelfName="Want To Read"
-            removeBook={removeBookFromShelf}
           />
           <BookShelf
-            books={shelves.bookShelfRead}
+            books={shelves.read}
             addBook={addBookToShelf}
             shelfName="Read"
-            removeBook={removeBookFromShelf}
           />
         </div>
       </div>

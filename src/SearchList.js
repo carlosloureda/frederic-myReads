@@ -13,10 +13,6 @@ export default class SearchList extends Component {
     this.props.addBook(bookToAdd, shelf, oldshelf);
   };
 
-  removeBookHandler = (bookToRemove, shelf) => {
-    this.props.removeBook(bookToRemove, shelf);
-  };
-
   isItABookFromMyShelf = bookToLookFor => {};
 
   render() {
@@ -41,11 +37,7 @@ export default class SearchList extends Component {
               {this.props.searchedItems.map(book => {
                 return (
                   <li key={book.id}>
-                    <Book
-                      book={book}
-                      removeBookHandler={this.removeBookHandler}
-                      addBookHandler={this.addBookHandler}
-                    />
+                    <Book book={book} addBookHandler={this.addBookHandler} />
                   </li>
                 );
               })}

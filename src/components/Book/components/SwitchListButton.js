@@ -27,7 +27,6 @@ export default class SwitchListButton extends Component {
 
     if (newShelfSelected !== currentBookShelf && currentBookShelf) {
       this.props.addBookHandler(newbook, newShelfSelected, currentBookShelf);
-      //this.props.removeBookHandler(newbook, currentBookShelf);
     }
   };
 

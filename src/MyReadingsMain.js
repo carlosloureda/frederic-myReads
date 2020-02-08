@@ -11,9 +11,9 @@ export default class MyReadingsMain extends Component {
   state = {
     showSearchPage: false,
     shelves: {
-      bookShelfRead: [],
-      bookShelfCurrentlyReading: [],
-      bookShelfWantToRead: []
+      read: [],
+      currentlyReading: [],
+      wantToRead: []
     },
     // TODO: Serached books and the search API query can (and should) live in the SearchList component
     //  You just need to pass into it the proper shelves books to work with it
@@ -30,9 +30,9 @@ export default class MyReadingsMain extends Component {
   updateSearchResults = (result = []) => {
     if (result.error !== "empty query") {
       const myBooks = [
-        ...this.state.shelves.bookShelfCurrentlyReading,
-        ...this.state.shelves.bookShelfWantToRead,
-        ...this.state.shelves.bookShelfRead
+        ...this.state.shelves.currentlyReading,
+        ...this.state.shelves.wantToRead,
+        ...this.state.shelves.read
       ];
       result = result.map(book => {
         myBooks.map(myBook => {
@@ -73,9 +73,9 @@ export default class MyReadingsMain extends Component {
     );
     this.setState(() => ({
       shelves: {
-        bookShelfRead: readList,
-        bookShelfCurrentlyReading: currentlyReadingList,
-        bookShelfWantToRead: wantToReadList
+        read: readList,
+        currentlyReading: currentlyReadingList,
+        wantToRead: wantToReadList
       }
     }));
   };
@@ -85,116 +85,37 @@ export default class MyReadingsMain extends Component {
   };
 
   addBookToShelf = (book, newShelf, oldShelf) => {
-    let currentBookOnReadShelf = this.state.shelves.bookShelfRead;
-    let currentBookOnWantToReadShelf = this.state.shelves.bookShelfWantToRead;
-    let currentBookOnCurrentlyReadingShelf = this.state.shelves
-      .bookShelfCurrentlyReading;
+    /* ERROR: TODO: You were updating the state directly! You need to do copies of state like this
+    https://www.samanthaming.com/tidbits/35-es6-way-to-clone-an-array/
+    */
+    let _shelves = {
+      currentlyReading: [...this.state.shelves.currentlyReading],
+      wantToRead: [...this.state.shelves.wantToRead],
+      read: [...this.state.shelves.read]
+    };
 
-    switch (newShelf) {
-      case "read":
-        book.shelf = "read";
-        currentBookOnReadShelf = [...currentBookOnReadShelf, book];
-        if (oldShelf === "wantToRead") {
-          currentBookOnWantToReadShelf = this.removeBookFromShelf(
-            book,
-            oldShelf,
-            currentBookOnWantToReadShelf
-          );
-        } else if (oldShelf === "currentlyReading") {
-          currentBookOnCurrentlyReadingShelf = this.removeBookFromShelf(
-            book,
-            oldShelf,
-            currentBookOnCurrentlyReadingShelf
-          );
-        } else {
-        }
-        break;
-
-      case "wantToRead":
-        book.shelf = "wantToRead";
-        currentBookOnWantToReadShelf = [...currentBookOnWantToReadShelf, book];
-        if (oldShelf === "read") {
-          currentBookOnReadShelf = this.removeBookFromShelf(
-            book,
-            oldShelf,
-            currentBookOnReadShelf
-          );
-        } else if (oldShelf === "currentlyReading") {
-          currentBookOnCurrentlyReadingShelf = this.removeBookFromShelf(
-            book,
-            oldShelf,
-            currentBookOnCurrentlyReadingShelf
-          );
-        } else {
-        }
-        break;
-
-      case "currentlyReading":
-        book.shelf = "currentlyReading";
-        currentBookOnCurrentlyReadingShelf = [
-          ...currentBookOnCurrentlyReadingShelf,
-          book
-        ];
-        if (oldShelf === "wantToRead") {
-          currentBookOnWantToReadShelf = this.removeBookFromShelf(
-            book,
-            oldShelf,
-            currentBookOnWantToReadShelf
-          );
-        } else if (oldShelf === "read") {
-          currentBookOnReadShelf = this.removeBookFromShelf(
-            book,
-            oldShelf,
-            currentBookOnReadShelf
-          );
-        } else {
-        }
-        break;
-
-      case "none":
+    if (newShelf) {
+      // remove book from the old arrays
+      _shelves[book.shelf] = this.removeBookFromShelf(
+        book,
+        _shelves[book.shelf]
+      );
+      // push book into the new arrays
+      if (newShelf !== "none") {
+        book.shelf = newShelf;
+        _shelves[newShelf] = _shelves[newShelf].concat(book);
+      } else {
         book.shelf = "none";
-
-        if (oldShelf === "read") {
-          currentBookOnReadShelf = this.removeBookFromShelf(
-            book,
-            oldShelf,
-            currentBookOnReadShelf
-          );
-        } else if (oldShelf === "wantToRead") {
-          currentBookOnWantToReadShelf = this.removeBookFromShelf(
-            book,
-            oldShelf,
-            currentBookOnWantToReadShelf
-          );
-        } else if (oldShelf === "currentlyReading") {
-          currentBookOnCurrentlyReadingShelf = this.removeBookFromShelf(
-            book,
-            oldShelf,
-            currentBookOnCurrentlyReadingShelf
-          );
-        } else {
-        }
-        break;
-
-      default:
-        console.log("this shelf does not exist");
+      }
     }
 
-    this.setState(() => ({
-      shelves: {
-        bookShelfRead: currentBookOnReadShelf,
-        bookShelfWantToRead: currentBookOnWantToReadShelf,
-        bookShelfCurrentlyReading: currentBookOnCurrentlyReadingShelf
-      }
-    }));
+    this.setState({
+      shelves: _shelves
+    });
   };
 
-  removeBookFromShelf = (bookToRemove, oldShelf, currentBooksFromShelf) => {
-    const bookToReadCleaned = currentBooksFromShelf.filter(
-      book => book.id !== bookToRemove.id
-    );
-    currentBooksFromShelf = bookToReadCleaned;
-    return currentBooksFromShelf;
+  removeBookFromShelf = (bookToRemove, currentBooksFromShelf) => {
+    return currentBooksFromShelf.filter(book => book.id !== bookToRemove.id);
   };
 
   onClickSearchButtonHandler = () => {
@@ -214,7 +135,6 @@ export default class MyReadingsMain extends Component {
                   searchedItems={this.state.searchedBooks}
                   searchAPI={this.searchAPI}
                   addBook={this.addBookToShelf}
-                  removeBook={this.removeBookFromShelf}
                   updateResultListHandler={this.updateResultList}
                   updateResultList={this.state.resultList}
                 />
@@ -224,7 +144,6 @@ export default class MyReadingsMain extends Component {
               <HomePage
                 shelves={this.state.shelves}
                 addBookToShelf={this.addBookToShelf}
-                removeBookFromShelf={this.removeBookFromShelf}
                 onClickSearchButtonHandler={this.onClickSearchButtonHandler}
               />
             </Route>
