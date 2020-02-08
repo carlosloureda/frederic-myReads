@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 
 import SearchList from "./SearchList";
-import SearchButton from "./SearchButton";
+
 import { getAll, search } from "./BooksAPI";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import BookShelf from "./components/BookShelf/BookShelf";
+
+import HomePage from "./components/HomePage/HomePage";
 
 export default class MyReadingsMain extends Component {
   state = {
@@ -240,37 +241,12 @@ export default class MyReadingsMain extends Component {
               )}
             />
             <Route path="/">
-              <div className="list-books">
-                <div className="list-books-title">
-                  <h1>MyReads</h1>
-                </div>
-                <div className="list-books-content">
-                  <div>
-                    <BookShelf
-                      books={this.state.shelves.bookShelfCurrentlyReading}
-                      addBook={this.addBookToShelf}
-                      shelfName="Currently Reading"
-                      removeBook={this.removeBookFromShelf}
-                    />
-                    <BookShelf
-                      books={this.state.shelves.bookShelfWantToRead}
-                      addBook={this.addBookToShelf}
-                      shelfName="Want To Read"
-                      removeBook={this.removeBookFromShelf}
-                    />
-                    <BookShelf
-                      books={this.state.shelves.bookShelfRead}
-                      addBook={this.addBookToShelf}
-                      shelfName="Read"
-                      removeBook={this.removeBookFromShelf}
-                    />
-                  </div>
-                </div>
-                <SearchButton
-                  onClickHandler={this.onClickSearchButtonHandler}
-                />
-              </div>
-              }
+              <HomePage
+                shelves={this.state.shelves}
+                addBookToShelf={this.addBookToShelf}
+                removeBookFromShelf={this.removeBookFromShelf}
+                onClickSearchButtonHandler={this.onClickSearchButtonHandler}
+              />
             </Route>
           </Switch>
         </div>
