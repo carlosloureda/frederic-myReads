@@ -15,6 +15,8 @@ export default class MyReadingsMain extends Component {
       bookShelfCurrentlyReading: [],
       bookShelfWantToRead: []
     },
+    // TODO: Serached books and the search API query can (and should) live in the SearchList component
+    //  You just need to pass into it the proper shelves books to work with it
     searchedBooks: [],
     resultList: []
   };
@@ -25,48 +27,26 @@ export default class MyReadingsMain extends Component {
     }));
   };
 
-  updateSearchResults = result => {
-    if (result !== undefined)
-      if (result.error !== "empty query") {
-        result.map(book => {
-          if (
-            this.state.shelves.bookShelfRead.filter(
-              bookRead => bookRead.id === book.id
-            ).length > 0
-          ) {
-            book["shelf"] = "read";
+  updateSearchResults = (result = []) => {
+    if (result.error !== "empty query") {
+      const myBooks = [
+        ...this.state.shelves.bookShelfCurrentlyReading,
+        ...this.state.shelves.bookShelfWantToRead,
+        ...this.state.shelves.bookShelfRead
+      ];
+      result = result.map(book => {
+        myBooks.map(myBook => {
+          if (myBook.id === book.id) {
+            book.shelf = myBook.shelf;
           }
-
-          if (
-            this.state.shelves.bookShelfCurrentlyReading.filter(
-              bookRead => bookRead.id === book.id
-            ).length > 0
-          ) {
-            book["shelf"] = "currentlyReading";
-          }
-
-          if (
-            this.state.shelves.bookShelfWantToRead.filter(
-              bookRead => bookRead.id === book.id
-            ).length > 0
-          ) {
-            book["shelf"] = "wantToRead";
-          }
+          return myBook;
         });
-        this.setState(
-          {
-            searchedBooks: result
-          },
-          () => {
-            if (this.state.searchedBooks.length > 0)
-              window.history.pushState("search", "Title", "/search");
-          }
-        );
-      } else {
-        this.setState({
-          searchedBooks: []
-        });
-      }
+        return book;
+      });
+    }
+    this.setState({
+      searchedBooks: result
+    });
   };
 
   searchAPI = e => {
